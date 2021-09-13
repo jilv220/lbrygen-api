@@ -1,9 +1,11 @@
 import flask
 import requests
 import os
+import os_utils
 
 from flask import request, jsonify
 from flask_cors import CORS, cross_origin
+from os_utils import rm_file
 
 # config flask
 app = flask.Flask(__name__)
@@ -36,17 +38,20 @@ def api_all():
 def get_stream_from_url():
 
     uri = request.args.get("url")
-    print(uri)
+    #print(uri)
 
     lbry_get = requests.post("http://localhost:5279", 
         json={  "method": "get", 
-                "params": {"uri": str(uri)}   }
+                "params": {"uri": str(uri), "save_file": False }   }
         ).json()
     
     #print(lbry_get)
 
     streaming_url = lbry_get["result"]["streaming_url"]
+    #download_path = lbry_get["result"]["download_path"]
+
     #print(streaming_url)
+    #print(download_path)
 
     return streaming_url
 
