@@ -22,11 +22,15 @@ def home():
 def api_all():
 
     tag = request.args.get("t")
-    #print(tag)
+    print("param tag is : " + str(tag))
+
+    text = request.args.get("q")
+    print("param text is : " + str(text))
 
     claim_search = requests.post("http://localhost:5279", 
         json={  "method": "claim_search", 
-                "params": {"any_tags": [str(tag)]}   }
+                "params": { "any_tags": [ str(tag) if tag != None else "" ], 
+                            "text": str(text) if text !=None else ""} }
         ).json()
     
     #print(type(claim_search))
