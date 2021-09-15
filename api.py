@@ -1,5 +1,6 @@
 import flask
 import requests
+import time as timer 
 import os
 import os_utils
 
@@ -22,10 +23,10 @@ def home():
 def api_all():
 
     tag = request.args.get("t")
-    print("param tag is : " + str(tag))
+    #print("param tag is : " + str(tag))
 
     text = request.args.get("q")
-    print("param text is : " + str(text))
+    #print("param text is : " + str(text))
 
     claim_search = requests.post("http://localhost:5279", 
         json={  "method": "claim_search", 
@@ -44,15 +45,25 @@ def get_stream_from_url():
     uri = request.args.get("url")
     #print(uri)
 
+    streaming_url = ""
+    timeout = ""
+
     lbry_get = requests.post("http://localhost:5279", 
         json={  "method": "get", 
-                "params": {"uri": str(uri), "save_file": False }   }
+                "params": {"uri": str(uri), "save_file": False, "timeout": 3}   }
         ).json()
-    
+
     #print(lbry_get)
 
-    streaming_url = lbry_get["result"]["streaming_url"]
+    try:
+        streaming_url = lbry_get["result"]["streaming_url"]
+    except:
+        timeout = lbry_get["result"]["error"]
+        print("Time out in 3 seconds !!")
+    
     #download_path = lbry_get["result"]["download_path"]
+    if timeout != "":
+        return "timeout"
 
     #print(streaming_url)
     #print(download_path)
